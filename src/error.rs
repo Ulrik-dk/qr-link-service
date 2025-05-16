@@ -8,6 +8,9 @@ pub enum Error {
     #[error("Database error: {0}")]
     DatabaseError(rusqlite::Error),
 
+    #[error("Database error: {0}")]
+    DatabaseErrorTwo(String),
+
     #[error("Lock poisoned: {0}")]
     LockError(String),
 }
@@ -19,6 +22,7 @@ impl IntoResponse for Error {
                 (StatusCode::INTERNAL_SERVER_ERROR, format!("{}", error))
             }
             Error::LockError(error) => (StatusCode::INTERNAL_SERVER_ERROR, format!("{}", error)),
+            Error::DatabaseErrorTwo(_) => todo!(),
         };
 
         (status_code, message).into_response()
@@ -30,6 +34,7 @@ impl From<Error> for String {
         match &value {
             Error::DatabaseError(error) => format!("{}", error),
             Error::LockError(error) => error.to_owned(),
+            Error::DatabaseErrorTwo(_) => todo!(),
         }
     }
 }
